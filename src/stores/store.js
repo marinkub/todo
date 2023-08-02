@@ -6,20 +6,86 @@ class Store {
         username:'',
         password:''
     }
-
+    task = {
+        title:'',
+        description:''
+    }
+    tasks = []
     status = false
     user = []
     id = ''
+    taskID = ''
+    ModalShow = false
+    ModalTitle = ""
+    ModalButton = ""
     constructor() {
         this.service = new Service();
         makeAutoObservable(this, {
             values: observable,
+            task: observable,
+            tasks: observable,
             status: observable,
             user: observable,
             id: observable,
+            taskID: observable,
+            ModalShow: observable,
+            ModalTitle: observable,
+            ModalButton: observable,
             setValues: action,
-            isLoogedin: action
+            isLoogedin: action,
+            openModal: action
         })
+    }
+
+    getTasksAsync = async() => {
+        const data = await this.service.fetchTasks(this.id);
+
+        runInAction(() => {
+            this.tasks = data;
+        })
+    }
+
+    get TasksList() {
+        if(this.tasks.length > 0)
+        {
+            return this.tasks;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    currentId = (id) => {
+        if(!id)
+        {
+            this.task.title = "";
+            this.task.description = "";
+            this.ModalTitle = "Add new task";
+            this.ModalButton = "Add";
+        }
+        else
+        {
+            this.tasks.map(a => {
+                if(a.id === id)
+                {
+                    this.task.title = a.title;
+                    this.task.description = a.description;
+                    this.ModalTitle = "Edit task";
+                    this.ModalButton = "Edit";
+                    this.taskID = a.id;
+                }
+            })
+        }
+    }
+
+    openModal(id) {
+        this.ModalShow = true;
+        this.currentId(id);
+    }
+
+    closeModal() {
+        this.ModalShow = false;
     }
 
     setUsername(values) {
@@ -28,6 +94,14 @@ class Store {
 
     setPassword(values) {
         this.values.password = values;
+    }
+
+    setTaskTitle(values) {
+        this.task.title = values;
+    }
+
+    setTaskDescription(values) {
+        this.task.description = values;
     }
 
     loginAction = async() => {
@@ -55,7 +129,30 @@ class Store {
     logout() {
         this.id = '';
         this.status = false;
+        this.tasks = [];
         localStorage.clear();
+    }
+
+    modalAction() {
+        if(!this.taskID)
+        {
+            this.service.addNew(localStorage.getItem("user"), this.task.title, this.task.description);
+            this.closeModal();
+        }
+        else
+        {
+            this.service.edit(this.task.title, this.task.description, this.taskID);
+            this.closeModal();
+            this.taskID = null;
+        }
+    }
+
+    /*addNew() {
+        this.service.addNew(localStorage.getItem("user"), this.task.title, this.task.description);
+    }*/
+
+    onDelete = async(id) => {
+        await this.service.delete(id);
     }
 }
 

@@ -16,6 +16,38 @@ class Service {
 
         return user;
     }
+
+    fetchTasks = async(userID) => {
+        const tasks = [];
+        var q = query(collection(db, "Tasks"), where("userID", "==", userID), orderBy("date", "desc"));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            tasks.push({id: doc.id, title: doc.data().title, description: doc.data().description, date: doc.data().date});
+        })
+
+        return tasks;
+    }
+
+    addNew = async(userID, title, description) => {
+        const date = new Date().toLocaleString('en-GB');
+        await addDoc(collection(db, "Tasks"), {
+            userID: userID,
+            title: title,
+            description: description,
+            date: date 
+        })
+    }
+
+    edit = async(title, description, id) => {
+        await updateDoc(doc(db, "Tasks", id), {
+            title: title,
+            description: description
+        })
+    }
+
+    delete = async(id) => {
+        await deleteDoc(doc(db, "Tasks", id));
+    }
 }
 
 export default Service;
