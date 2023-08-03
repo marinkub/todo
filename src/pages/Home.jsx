@@ -2,6 +2,7 @@ import Login from '../component/Login';
 import Todo from '../component/Todo';
 import TaskModal from '../component/TaskModal';
 import TasksTable from '../component/TasksTable';
+import NewUserModal from '../component/NewUserModal';
 import { observer } from 'mobx-react';
 import { useEffect } from 'react';
 
@@ -14,7 +15,10 @@ function Home(props) {
     if (props.store.status === false)
     {
         return (
-            <Login store={props.store}/>
+            <>
+            <Login store={props.store} />
+            <NewUserModal store={props.store} show={props.store.UserModalShow} onClose={()=> props.store.closeUserModal()}/>
+            </>
         )
     }
     else

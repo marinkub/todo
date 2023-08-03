@@ -1,11 +1,10 @@
 import { observer } from "mobx-react";
-import { useEffect } from "react";
 
 function Login(props) {
     const store = props.store;
     
     return (
-        <div>
+        <div className="Login">
             <input 
                 id="username"
                 type="text"
@@ -14,6 +13,7 @@ function Login(props) {
                 placeholder="Username"
                 onChange={(e) => store.setUsername(e.target.value)}
                 className="userinput"
+                disabled={store.isDisabled}
             />
             <br/>
             <input 
@@ -24,7 +24,10 @@ function Login(props) {
                 placeholder="Password"
                 onChange={(e) => store.setPassword(e.target.value)}
                 className="userinput"
+                disabled={store.isDisabled}
             />
+            <br/>
+            <button onClick={() => {store.openUserModal()}}>Create account</button>
             <br/>
             <button onClick={() => {store.loginAction()}}>Login</button>
         </div>

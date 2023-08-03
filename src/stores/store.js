@@ -15,9 +15,12 @@ class Store {
     user = []
     id = ''
     taskID = ''
+    order = 'desc'
     ModalShow = false
     ModalTitle = ""
     ModalButton = ""
+    UserModalShow = false
+    isDisabled = false
     constructor() {
         this.service = new Service();
         makeAutoObservable(this, {
@@ -28,9 +31,12 @@ class Store {
             user: observable,
             id: observable,
             taskID: observable,
+            order: observable,
             ModalShow: observable,
             ModalTitle: observable,
             ModalButton: observable,
+            UserModalShow: observable,
+            isDisabled: observable,
             setValues: action,
             isLoogedin: action,
             openModal: action
@@ -38,11 +44,30 @@ class Store {
     }
 
     getTasksAsync = async() => {
-        const data = await this.service.fetchTasks(this.id);
+        const data = await this.service.fetchTasks(this.id, this.order);
 
         runInAction(() => {
             this.tasks = data;
         })
+    }
+
+    async handleSort(values) {
+        if (values === "asc")
+        {
+            this.order = values;
+            const data = await this.service.fetchTasks(this.id, this.order);
+            runInAction(() => {
+                this.tasks = data;
+            })
+        }
+        if (values === "desc")
+        {
+            this.order = values;
+            const data = await this.service.fetchTasks(this.id, this.order);
+            runInAction(() => {
+                this.tasks = data;
+            })
+        }
     }
 
     get TasksList() {
@@ -77,6 +102,16 @@ class Store {
                 }
             })
         }
+    }
+
+    openUserModal() {
+        this.UserModalShow = true;
+        this.isDisabled = true;
+    }
+
+    closeUserModal() {
+        this.UserModalShow = false;
+        this.isDisabled = false;
     }
 
     openModal(id) {
@@ -145,6 +180,12 @@ class Store {
             this.closeModal();
             this.taskID = null;
         }
+    }
+
+    addNewUser() {
+        this.service.addNewUser(this.values.username, this.values.password);
+        this.loginAction();
+        this.closeUserModal();
     }
 
     /*addNew() {
