@@ -3,7 +3,7 @@ import { useEffect } from "react";
 function TasksTable(props) {
 
     useEffect(() => {
-        props.store.getTasksAsync();
+        props.store.TasksStore.getTasksAsync();
     }, []);
 
     return(
@@ -13,7 +13,7 @@ function TasksTable(props) {
                     <tr>
                         <th>Title</th>
                         <th>Description</th>
-                        <th>Date</th>
+                        <th>Date  added</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,7 +24,7 @@ function TasksTable(props) {
                                 <td>{task.description}</td>
                                 <td>{task.date}</td>
                                 <td><button onClick={() =>{props.store.openModal(task.id)}}>Edit</button></td>
-                                <td><button onClick={() =>{props.store.onDelete(task.id)}}>Delete</button></td>
+                                <td><button onClick={() =>{props.store.TasksStore.deleteTask(task.id)}}>Delete</button></td>
                             </tr>
                         ))
                         : <tr><td>No results</td></tr>

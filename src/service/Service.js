@@ -1,5 +1,5 @@
 import { db } from "../utilities/firebase";
-import { collection, getDocs, limit, orderBy, query, startAfter, endBefore, deleteDoc, doc, where, addDoc, updateDoc, limitToLast } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, deleteDoc, doc, where, addDoc, updateDoc } from "firebase/firestore";
 
 class Service {
     

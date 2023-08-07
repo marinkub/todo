@@ -1,5 +1,7 @@
-import { action, makeAutoObservable, observable, runInAction } from "mobx";
+import { action, makeAutoObservable, observable } from "mobx";
 import Service from "../service/Service";
+import TasksStore from "./TasksStore";
+import UserStore from "./UserStore";
 
 class Store {
     values = {
@@ -10,75 +12,38 @@ class Store {
         title:'',
         description:''
     }
-    tasks = []
-    status = false
-    user = []
-    id = ''
     taskID = ''
-    order = 'desc'
     ModalShow = false
     ModalTitle = ""
     ModalButton = ""
     UserModalShow = false
     isDisabled = false
     constructor() {
+        this.TasksStore = TasksStore;
+        this.UserStore = UserStore;
         this.service = new Service();
         makeAutoObservable(this, {
             values: observable,
             task: observable,
-            tasks: observable,
-            status: observable,
-            user: observable,
-            id: observable,
             taskID: observable,
-            order: observable,
             ModalShow: observable,
             ModalTitle: observable,
             ModalButton: observable,
             UserModalShow: observable,
             isDisabled: observable,
-            setValues: action,
-            isLoogedin: action,
-            openModal: action
+            currentId: action,
+            openUserModal: action,
+            closeUserModal: action,
+            openModal: action,
+            closeModal: action,
+            setUsername: action,
+            setPassword: action,
+            setTaskTitle: action,
+            setTaskDescription: action,
+            modalAction: action,
+            loginAction: action,
+            addNewUser: action
         })
-    }
-
-    getTasksAsync = async() => {
-        const data = await this.service.fetchTasks(this.id, this.order);
-
-        runInAction(() => {
-            this.tasks = data;
-        })
-    }
-
-    async handleSort(values) {
-        if (values === "asc")
-        {
-            this.order = values;
-            const data = await this.service.fetchTasks(this.id, this.order);
-            runInAction(() => {
-                this.tasks = data;
-            })
-        }
-        if (values === "desc")
-        {
-            this.order = values;
-            const data = await this.service.fetchTasks(this.id, this.order);
-            runInAction(() => {
-                this.tasks = data;
-            })
-        }
-    }
-
-    get TasksList() {
-        if(this.tasks.length > 0)
-        {
-            return this.tasks;
-        }
-        else
-        {
-            return null;
-        }
     }
 
     currentId = (id) => {
@@ -91,7 +56,7 @@ class Store {
         }
         else
         {
-            this.tasks.map(a => {
+            this.TasksStore.TasksList.map(a => {
                 if(a.id === id)
                 {
                     this.task.title = a.title;
@@ -139,61 +104,27 @@ class Store {
         this.task.description = values;
     }
 
-    loginAction = async() => {
-        const data = await this.service.loginCheck(this.values.username, this.values.password)
-
-        runInAction(() => {
-            this.user = data;
-            this.status = this.user[0].status;
-            this.id = this.user[0].id;
-            localStorage.setItem('user', this.user[0].id);
-            localStorage.setItem('status', this.user[0].status);
-        })
-    }
-
-    isLoogedin() {
-        const loggedInUser = localStorage.getItem("user");
-        const loggedStatus = localStorage.getItem("status");
-        if (loggedInUser && loggedStatus)
-        {
-            this.status = loggedStatus;
-            this.id = loggedInUser;
-        }
-    }
-
-    logout() {
-        this.id = '';
-        this.status = false;
-        this.tasks = [];
-        localStorage.clear();
-    }
-
     modalAction() {
         if(!this.taskID)
         {
-            this.service.addNew(localStorage.getItem("user"), this.task.title, this.task.description);
+            this.TasksStore.addNewTask(localStorage.getItem("user"), this.task.title, this.task.description)
             this.closeModal();
         }
         else
         {
-            this.service.edit(this.task.title, this.task.description, this.taskID);
+            this.TasksStore.editTask(this.task.title, this.task.description, this.taskID);
             this.closeModal();
             this.taskID = null;
         }
     }
 
-    addNewUser() {
-        this.service.addNewUser(this.values.username, this.values.password);
-        this.loginAction();
-        this.closeUserModal();
+    loginAction = async() => {
+        this.UserStore.loginUser(this.values.username, this.values.password);
     }
-
-    /*addNew() {
-        this.service.addNew(localStorage.getItem("user"), this.task.title, this.task.description);
-    }*/
-
-    onDelete = async(id) => {
-        await this.service.delete(id);
+   
+    addNewUser() {
+        this.UserStore.addNewUser(this.values.username, this.values.password);
+        this.closeUserModal();
     }
 }
 

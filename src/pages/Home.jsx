@@ -9,10 +9,10 @@ import { useEffect } from 'react';
 function Home(props) {
 
     useEffect(() => {
-        props.store.isLoogedin();
+        props.store.UserStore.isLoggedIn();
     }, []);
 
-    if (props.store.status === false)
+    if (props.store.UserStore.status === false)
     {
         return (
             <>
@@ -26,7 +26,7 @@ function Home(props) {
         return (
             <>
             <Todo store={props.store} />
-            <TasksTable store={props.store} list={props.store.TasksList}/>
+            <TasksTable store={props.store} list={props.store.TasksStore.TasksList}/>
             <TaskModal store={props.store} show={props.store.ModalShow} onClose={() => props.store.closeModal()} title={props.store.ModalTitle} buttonTitle={props.store.ModalButton}/>
             </>
         )
