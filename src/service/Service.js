@@ -10,7 +10,7 @@ class Service {
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
             status = true
-            user.push({id: doc.id, status: status});
+            user.push({id: doc.id, status: status, username: doc.data().username});
         }) 
 
         return user;

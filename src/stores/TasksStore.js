@@ -56,16 +56,30 @@ class TasksStore {
     }
 
     async addNewTask(userID, title, description) {
-        await this.service.addNew(userID, title, description);
-        this.getTasksAsync();
+        if(title !== "" && description !== "")
+        {
+            await this.service.addNew(userID, title, description);
+            this.getTasksAsync();
+        }
+        else
+        {
+            alert("Title or description can't be empty")
+        }
     }
 
     async editTask(title, description, taskID) {
-        await this.service.edit(title, description, taskID)
-        const data = await this.service.fetchTasks(localStorage.getItem("user"), this.order);
-        runInAction(() => {
-            this.tasks = data;
-        })
+        if(title !== "" && description !== "")
+        {
+            await this.service.edit(title, description, taskID)
+            const data = await this.service.fetchTasks(localStorage.getItem("user"), this.order);
+            runInAction(() => {
+                this.tasks = data;
+            })
+        }
+        else
+        {
+            alert("Title or description can't be empty")
+        }
     }
 
     deleteTask = async(id) => {

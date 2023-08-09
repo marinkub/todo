@@ -26,3 +26,22 @@ code {
   width: 35%;
   padding: 5px;
 }
+
+.loginButton {
+  margin-top: 5px;
+}
+
+.topBar {
+  display: grid;
+  grid-template-columns: repeat(2, calc(10% - 30px));
+}
+
+.logoutButton {
+  border: 1px solid;
+  padding-bottom: 1px;
+}
+
+.logoutButton:hover{
+  background-color: #BCBCBC;
+  cursor: default;
+}

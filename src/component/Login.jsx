@@ -27,9 +27,9 @@ function Login(props) {
                 disabled={store.isDisabled}
             />
             <br/>
-            <button onClick={() => {store.loginAction()}}>Login</button>
+            <button className="loginButton" onClick={() => {store.loginAction()}}>Login</button>
             <br/>
-            <button onClick={() => {store.openUserModal()}}>Create account</button>
+            <button className="loginButton" onClick={() => {store.openUserModal()}}>Create account</button>
         </div>
     )
 }
