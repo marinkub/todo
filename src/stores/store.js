@@ -108,12 +108,11 @@ class Store {
         if(!this.taskID)
         {
             this.TasksStore.addNewTask(localStorage.getItem("user"), this.task.title, this.task.description)
-            this.closeModal();
+            
         }
         else
         {
             this.TasksStore.editTask(this.task.title, this.task.description, this.taskID);
-            this.closeModal();
             this.taskID = null;
         }
     }
@@ -124,7 +123,6 @@ class Store {
    
     addNewUser() {
         this.UserStore.addNewUser(this.values.username, this.values.password);
-        this.closeUserModal();
     }
 }
 

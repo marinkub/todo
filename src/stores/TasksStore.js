@@ -1,11 +1,13 @@
 import { action, makeAutoObservable, observable, runInAction } from "mobx";
 import Service from "../service/Service";
+import Store from "./store";
 
 class TasksStore {
     tasks = []
     order = 'desc'
     constructor() {
         this.service = new Service();
+        this.store = Store;
         makeAutoObservable(this, {
             tasks: observable,
             order: observable,
@@ -60,6 +62,7 @@ class TasksStore {
         {
             await this.service.addNew(userID, title, description);
             this.getTasksAsync();
+            this.store.closeModal();
         }
         else
         {
@@ -75,6 +78,7 @@ class TasksStore {
             runInAction(() => {
                 this.tasks = data;
             })
+            this.store.closeModal();
         }
         else
         {

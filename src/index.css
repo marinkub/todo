@@ -32,16 +32,22 @@ code {
 }
 
 .topBar {
-  display: grid;
-  grid-template-columns: repeat(2, calc(10% - 30px));
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 10px;
 }
 
 .logoutButton {
   border: 1px solid;
-  padding-bottom: 1px;
+  padding: 1px;
+  margin-left: 5px;
 }
 
 .logoutButton:hover{
   background-color: #BCBCBC;
   cursor: default;
+}
+
+.taskSort {
+  margin-left: 10px;
 }

@@ -1,5 +1,6 @@
 import { action, makeAutoObservable, observable, runInAction } from "mobx";
 import Service from "../service/Service";
+import store from "./store";
 
 class UserStore {
     userID = ''
@@ -8,6 +9,7 @@ class UserStore {
     username = ''
     constructor() {
         this.service = new Service();
+        this.store = store;
         makeAutoObservable(this, {
             userID: observable,
             status: observable,
@@ -69,8 +71,16 @@ class UserStore {
     }
 
     addNewUser(username, password) {
-        this.service.addNewUser(username, password);
-        this.loginUser(username, password);
+        if(username !== "" && password !== "")
+        {
+            this.service.addNewUser(username, password);
+            this.loginUser(username, password);
+            this.store.closeUserModal();
+        }
+        else
+        {
+            alert("Username or password can't be empty");
+        }
     }
 }
 
